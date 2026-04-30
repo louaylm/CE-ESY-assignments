@@ -1,0 +1,55 @@
+#include <stdio.h>
+#include <string.h>
+#define SIZE 50
+typedef struct {char buffer[SIZE];
+    int head;
+    int tail;
+    int count;
+} CircularBuffer;
+void init(CircularBuffer *cb) {
+cb->head = 0;
+  cb->tail = 0;
+  cb->count = 0;}
+int isFull(CircularBuffer *cb) {
+    return cb->count == SIZE;}
+int isEmpty(CircularBuffer *cb) {
+    return cb->count == 0;}
+
+void writeBuffer(CircularBuffer *cb, char data) {
+ if (isFull(cb)){
+printf("buffer overflow!\n");
+ return;}
+cb->buffer[cb->tail] = data;
+cb->tail = (cb->tail + 1) % SIZE;
+cb->count++;}
+char readBuffer(CircularBuffer *cb) {
+    if (isEmpty(cb)) {
+        printf("buffer Underflow!\n");
+        return '\0';}
+   char data = cb->buffer[cb->head];
+    cb->head = (cb->head + 1) % SIZE;
+    cb->count--;
+    return data;}
+int main(){
+   CircularBuffer cb;
+    init(&cb);
+    char name[100];
+    printf("enter your name:");
+    fgets(name, sizeof(name), stdin);
+    name[strcspn(name, "\n")] = 0;
+    strcat(name, " CE-ESY");
+    int i;
+    int len = strlen(name);
+    for (i = 0; i < len; i++) {
+        writeBuffer(&cb, name[i]);}
+    printf("output: ");
+    while (!isEmpty(&cb)) {
+        char c = readBuffer(&cb);
+        if (c != '\0')
+            printf("%c", c);}
+    printf("\n");
+    if (isEmpty(&cb)) {
+        printf("buffer is now empty.\n");}
+        else{
+        printf("something wrong, buffer is not empty!!\n"); }
+    return 0;}
